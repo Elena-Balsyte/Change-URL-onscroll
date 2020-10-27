@@ -1,0 +1,199 @@
+<!-- I was researching about solutions to change URL on scroll,
+and found different solutions, but eventually chose to use the jQuery. 
+ -->
+
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html {
+  font-size: 1em;
+}
+
+body {
+  width: 100%;
+  font-family: 'Roboto Slab', serif;
+  font-size: 16px;
+}
+
+  header {
+    height: 150px;
+    background-color: black;
+    color: white;
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  header, section, footer  {
+    display: flex;
+    justify-content: center;
+    padding: 0 0 3em 0;
+  }
+
+  section {
+    height: 700px;
+    align-items: center;
+  }
+
+  #top-section {
+    background-color: yellow;
+  }
+
+  #mid-section {
+    background-color: green;
+  }
+
+  #bottom-section {
+    background-color: red;
+  }
+
+  header nav ul {
+     display: flex;
+     justify-content: flex-end;
+     align-items: center;
+     flex-flow: row wrap;
+     width: 100%;
+     list-style-type: none;
+     padding: 0;
+  }
+
+  header nav ul li {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    text-transform: uppercase;
+  }
+
+  nav ul li, a {
+    color: #FFC933;
+    font-size: 1em;
+    text-decoration: none;
+    margin: 15px;
+  }
+
+  #navbar {
+    opacity: 1;
+    padding: 20px 10px; /* Large padding which will shrink on scroll (using JS)*/
+    transition: 0.7s; /* Adds a transition effect when the padding is decreased */
+    width: 100%;
+    top: 0;
+    position: fixed;
+    z-index: 100;
+    height: 200px;
+  }
+
+  h2 {
+    padding: 25px;
+  }
+
+  footer {
+    height: 100px;
+    background-color: blue;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+</style>
+
+</head>
+
+<body>
+  <header id="navbar">
+    <nav id="navlist">
+      <ul>
+        <li><a href="#top-section">Top section</a></li>
+        <li><a href="#mid-section">Mid section</a></li>
+        <li><a href="#bottom-section">Bottom section</a></li>
+        <li><a href="#footer">Footer</a></li>
+
+      </ul>
+    </nav>
+
+  </header>
+  <main>
+    <section id="top-section">
+      <h2>I am a top section</h2>
+    </section>
+
+    <section id="mid-section">
+        <h2>I am a middle section</h2>
+    </section>
+
+    <section id="bottom-section">
+        <h2>I am a middle section</h2>
+    </section>
+    <footer id="footer">
+      <h2>I am a footer</h2>
+      <a href="#top-section">Back to top</a>
+    </footer>
+
+
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+
+  <script>
+  window.onscroll=function() {
+    scrollFunction();
+  };
+
+
+  function scrollFunction() {
+    if(document.body.scrollTop>50 || document.documentElement.scrollTop>50){
+      document.getElementById("navbar").style.padding="0px 10px";
+      document.getElementById("navbar").style.height="50px";
+      document.getElementById("navbar").style.opacity="0.85";
+    }
+    else {
+      document.getElementById("navbar").style.padding="20px 10px";
+      document.getElementById("navbar").style.height="100px";
+      document.getElementById("navbar").style.opacity="1";
+    }
+  }
+
+  navlist = [];
+  $("#navlist a").each(function(i) {
+      var thisLink = $(this);
+      var thisId = thisLink.attr('href');
+      var thisTarget = $(thisId);
+      navlist.push({
+          'anchor': thisLink,
+          'id': thisId,
+          'target': thisTarget
+      });
+      thisLink.on('click', function(e) {
+          e.preventDefault();
+          $('html, body').animate({
+              scrollTop: thisTarget.offset().top
+          }, 800);
+      });
+  });
+  $(window).on('scroll resize', function(e) {
+      $.each(navlist, function(e, elem) {
+          var placement = elem.target[0].getBoundingClientRect();
+          if( placement.top<window.innerHeight && placement.bottom>0 ) {
+              history.pushState({}, '', elem.id);
+              console.log('Hash: ' + elem.id);
+              return false; /* Exit $.each loop */
+          };
+      });
+  });
+  </script>
+
+</body>
+
+</html>
